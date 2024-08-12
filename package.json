@@ -1,5 +1,5 @@
 {
-  "name": "@kevinfreistroffer/server-cli",
+  "name": "server-cli",
   "repository": {
     "type": "git",
     "url": "https://github.com/KevinFreistroffer/server-cli.git"

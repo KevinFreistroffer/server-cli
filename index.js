@@ -82,7 +82,7 @@ try {
     }
     let verifyTokenValue;
     if (verifyTokenIndex > -1) {
-        // Retrieve the value after --custom
+        verifyTokenValue = process.argv[verifyTokenIndex + 1].toLowerCase();
         if (verifyTokenValue !== "true" && verifyTokenValue !== "false") {
             console.log("The value for 'verifyToken' must be either 'true' or 'false'.");
             process.exit();

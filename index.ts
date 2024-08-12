@@ -29,32 +29,32 @@ try {
     process.exit();
   }
 
-  const folder = process.argv.indexOf("-folder");
-  const routeType = process.argv.indexOf("-routeType");
-  const fileName = process.argv.indexOf("-fileName");
-  const verifyToken = process.argv.indexOf("-verifyToken");
-  const verifyAccessKey = process.argv.indexOf("-verifyAccessKey");
+  const folderIndex = process.argv.indexOf("-folder");
+  const routeTypeIndex = process.argv.indexOf("-routeType");
+  const fileNameIndex = process.argv.indexOf("-fileName");
+  const verifyTokenIndex = process.argv.indexOf("-verifyToken");
+  const verifyAccessKeyIndex = process.argv.indexOf("-verifyAccessKey");
 
   let warning = "";
   const requiredArguments = [];
 
-  if (folder === -1) {
+  if (folderIndex === -1) {
     requiredArguments.push("folder");
   }
 
-  if (routeType === -1) {
+  if (routeTypeIndex === -1) {
     requiredArguments.push("routeType");
   }
 
-  if (fileName === -1) {
+  if (fileNameIndex === -1) {
     requiredArguments.push("fileName");
   }
 
-  if (verifyToken === -1) {
+  if (verifyTokenIndex === -1) {
     requiredArguments.push("verifyToken");
   }
 
-  if (verifyAccessKey === -1) {
+  if (verifyAccessKeyIndex === -1) {
     requiredArguments.push("verifyAccessKey");
   }
 
@@ -79,9 +79,8 @@ try {
     process.exit();
   }
 
-  // ------------------------------------------------
-  const folderIndex = process.argv.indexOf("-folder");
-  let folderValue;
+  // ------------------------------------------------s
+  let folderValue!: string;
 
   if (folderIndex > -1) {
     // Retrieve the value after --custom
@@ -96,10 +95,8 @@ try {
       process.exit();
     }
   }
-  const routeTypeIndex = process.argv.indexOf("-routeType");
   let routeTypeValue: string;
-
-  if (routeType > -1) {
+  if (routeTypeIndex > -1) {
     // Retrieve the value after --custom
     routeTypeValue = process.argv[routeTypeIndex + 1];
 
@@ -113,9 +110,7 @@ try {
     }
   }
 
-  const fileNameIndex = process.argv.indexOf("-fileName");
-  let fileNameValue;
-
+  let fileNameValue!: string;
   if (fileNameIndex > -1) {
     // Retrieve the value after --custom
     fileNameValue = process.argv[fileNameIndex + 1];
@@ -126,9 +121,7 @@ try {
     }
   }
 
-  const verifyTokenIndex = process.argv.indexOf("-verifyToken");
   let verifyTokenValue;
-
   if (verifyTokenIndex > -1) {
     // Retrieve the value after --custom
     verifyTokenValue = process.argv[verifyTokenIndex + 1];
@@ -150,9 +143,7 @@ try {
     }
   }
 
-  const verifyAccessKeyIndex = process.argv.indexOf("-verifyAccessKey");
   let verifyAccessKeyValue;
-
   if (folderIndex > -1) {
     // Retrieve the value after --custom
     verifyAccessKeyValue = process.argv[verifyAccessKeyIndex + 1];
@@ -209,12 +200,11 @@ try {
   }
 
   readWriteAsync();
-
   Object.entries(projectStructure).forEach(([dir, files]) => {
     // fs.mkdirSync(dir, { recursive: true }); // Create directories
     files.forEach((file) =>
       fs.writeFileSync(
-        `src/router/routes/${folder}/${file}`,
+        `src/router/routes/${folderValue}/${fileNameValue}`,
         ((`
       "use strict";
       import * as express from "express";

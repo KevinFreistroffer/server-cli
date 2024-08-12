@@ -168,7 +168,7 @@ try {
   function readWriteAsync() {
     try {
       fs.readFile(
-        path.join(__dirname, "./config/index.ts"),
+        path.join("src/config/index.ts"),
         "utf-8",
         function (err, data) {
           // console.log(data);

@@ -161,6 +161,7 @@ try {
         console.log(match);
 
         if (verifyTokenValue === "true") {
+          console.log("verifyTokenValue is true writingFile");
           fs.writeFile(
             "src/config/index.ts",
             data.replace(
@@ -177,6 +178,7 @@ try {
         }
 
         if (verifyAccessKeyValue === "true") {
+          console.log("verifyAccessKeyValue is true writingFile");
           fs.writeFile(
             "src/config/index.ts",
             data.replace(

@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const validFolders = ["auth", "user", "journal"];
 const validRouteTypes = ["get", "post", "put", "delete"];
 try {
@@ -108,7 +107,7 @@ try {
     };
     function readWriteAsync() {
         try {
-            fs_1.default.readFile(path_1.default.join(__dirname, "src/config/index.ts"), "utf-8", function (err, data) {
+            fs_1.default.readFile("src/config/index.ts", "utf-8", function (err, data) {
                 // console.log(data);
                 if (err)
                     throw err;
@@ -117,7 +116,7 @@ try {
                 var newValue = data.replace(
                 // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
                 /protectedRoutes: \[/gim, 'protectedRoutes: ["/user/someRoute",');
-                fs_1.default.writeFile(path_1.default.join(__dirname, "src/config/index.ts"), newValue, "utf-8", function (err) {
+                fs_1.default.writeFile("src/config/index.ts", newValue, "utf-8", function (err) {
                     if (err)
                         throw err;
                     console.log("filelistAsync complete");

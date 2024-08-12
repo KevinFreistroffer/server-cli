@@ -167,33 +167,24 @@ try {
 
   function readWriteAsync() {
     try {
-      fs.readFile(
-        path.join(__dirname, "src/config/index.ts"),
-        "utf-8",
-        function (err, data) {
-          // console.log(data);
+      fs.readFile("src/config/index.ts", "utf-8", function (err, data) {
+        // console.log(data);
+        if (err) throw err;
+
+        const match = data.match(/protectedRoutes: \[/gim);
+        console.log(match);
+
+        var newValue = data.replace(
+          // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
+          /protectedRoutes: \[/gim,
+          'protectedRoutes: ["/user/someRoute",'
+        );
+
+        fs.writeFile("src/config/index.ts", newValue, "utf-8", function (err) {
           if (err) throw err;
-
-          const match = data.match(/protectedRoutes: \[/gim);
-          console.log(match);
-
-          var newValue = data.replace(
-            // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
-            /protectedRoutes: \[/gim,
-            'protectedRoutes: ["/user/someRoute",'
-          );
-
-          fs.writeFile(
-            path.join(__dirname, "src/config/index.ts"),
-            newValue,
-            "utf-8",
-            function (err) {
-              if (err) throw err;
-              console.log("filelistAsync complete");
-            }
-          );
-        }
-      );
+          console.log("filelistAsync complete");
+        });
+      });
     } catch (error: any) {
       throw error;
     }

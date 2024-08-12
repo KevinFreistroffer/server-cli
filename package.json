@@ -2,7 +2,7 @@
   "name": "@kevinfreistroffer/server-cli",
   "repository": {
     "type": "git",
-    "url": "https://github.com/octocat/my-other-repo.git"
+    "url": "https://github.com/KevinFreistroffer/server-cli.git"
   },
   "version": "1.0.0",
   "main": "index.js",

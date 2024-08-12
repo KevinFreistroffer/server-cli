@@ -121,21 +121,10 @@ try {
     }
   }
 
-  let verifyTokenValue;
+  let verifyTokenValue!: string;
   if (verifyTokenIndex > -1) {
     // Retrieve the value after --custom
-    verifyTokenValue = process.argv[verifyTokenIndex + 1];
-    console.log(
-      "verifyTokenValue",
-      verifyTokenValue,
-      verifyTokenValue.toLowerCase() === "false",
-      typeof verifyTokenValue
-    );
-
-    if (
-      verifyTokenValue.toLowerCase() !== "true" &&
-      verifyTokenValue.toLowerCase() !== "false"
-    ) {
+    if (verifyTokenValue !== "true" && verifyTokenValue !== "false") {
       console.log(
         "The value for 'verifyToken' must be either 'true' or 'false'."
       );
@@ -143,15 +132,12 @@ try {
     }
   }
 
-  let verifyAccessKeyValue;
+  let verifyAccessKeyValue!: string;
   if (folderIndex > -1) {
     // Retrieve the value after --custom
-    verifyAccessKeyValue = process.argv[verifyAccessKeyIndex + 1];
+    verifyAccessKeyValue = process.argv[verifyAccessKeyIndex + 1].toLowerCase();
 
-    if (
-      verifyAccessKeyValue.toLowerCase() !== "true" &&
-      verifyAccessKeyValue.toLowerCase() !== "false"
-    ) {
+    if (verifyAccessKeyValue !== "true" && verifyAccessKeyValue !== "false") {
       console.log(
         "The value for 'verifyAccessKey' must be either 'true' or 'false'."
       );
@@ -174,16 +160,37 @@ try {
         const match = data.match(/protectedRoutes: \[/gim);
         console.log(match);
 
-        var newValue = data.replace(
-          // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
-          /protectedRoutes: \[/gim,
-          'protectedRoutes: ["/user/someRoute",'
-        );
+        if (verifyTokenValue === "true") {
+          fs.writeFile(
+            "src/config/index.ts",
+            data.replace(
+              // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
+              /protectedRoutes: \[/gim,
+              `protectedRoutes: ["${folderValue}/${fileNameValue}",`
+            ),
+            "utf-8",
+            function (err) {
+              if (err) throw err;
+              console.log("filelistAsync complete");
+            }
+          );
+        }
 
-        fs.writeFile("src/config/index.ts", newValue, "utf-8", function (err) {
-          if (err) throw err;
-          console.log("filelistAsync complete");
-        });
+        if (verifyAccessKeyValue === "true") {
+          fs.writeFile(
+            "src/config/index.ts",
+            data.replace(
+              // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
+              /privateRoutes: \[/gim,
+              `privateRoutes: ["${folderValue}/${fileNameValue}",`
+            ),
+            "utf-8",
+            function (err) {
+              if (err) throw err;
+              console.log("filelistAsync complete");
+            }
+          );
+        }
       });
     } catch (error: any) {
       throw error;

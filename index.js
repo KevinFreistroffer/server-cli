@@ -135,8 +135,8 @@ try {
     }
     readWriteAsync();
     Object.entries(projectStructure).forEach(([dir, files]) => {
-        fs_1.default.mkdirSync(dir, { recursive: true }); // Create directories
-        files.forEach((file) => fs_1.default.writeFileSync(`${dir}/${file}`, (`
+        // fs.mkdirSync(dir, { recursive: true }); // Create directories
+        files.forEach((file) => fs_1.default.writeFileSync(`src/router/routes/${folder}/${file}`, (`
       "use strict";
       import * as express from "express";
       const router = express.Router();

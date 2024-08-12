@@ -102,6 +102,7 @@ try {
   if (verifyTokenIndex > -1) {
     // Retrieve the value after --custom
     verifyTokenValue = process.argv[verifyTokenIndex + 1];
+    console.log("verifyTokenValue", verifyTokenValue);
     if (verifyTokenValue !== "true" && verifyTokenValue !== "false") {
       console.log(
         "The value for 'verifyToken' must be either 'true' or 'false'."
@@ -113,6 +114,7 @@ try {
   if (folderIndex > -1) {
     // Retrieve the value after --custom
     verifyAccessKeyValue = process.argv[verifyAccessKeyIndex + 1].toLowerCase();
+    console.log("verifyAccessKeyValue", verifyAccessKeyValue);
     if (verifyAccessKeyValue !== "true" && verifyAccessKeyValue !== "false") {
       console.log(
         "The value for 'verifyAccessKey' must be either 'true' or 'false'."
@@ -145,7 +147,6 @@ try {
               "utf-8",
               function (err) {
                 if (err) throw err;
-                console.log("filelistAsync complete");
               }
             );
           }
@@ -160,7 +161,6 @@ try {
               "utf-8",
               function (err) {
                 if (err) throw err;
-                console.log("filelistAsync complete");
               }
             );
           }

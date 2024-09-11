@@ -94,6 +94,10 @@ try {
       );
       process.exit();
     }
+
+    if (!folderValue.startsWith("/")) {
+      folderValue = `/${folderValue}`;
+    }
   }
   let routeTypeValue: string;
   if (routeTypeIndex > -1) {

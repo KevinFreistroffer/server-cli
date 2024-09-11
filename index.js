@@ -1,183 +1,144 @@
 #!/usr/bin/env node
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const validFolders = ["auth", "user", "journal"];
 const validRouteTypes = ["get", "post", "put", "delete"];
 try {
-  const args = process.argv.slice(2);
-  // All arguments missing.
-  if (!args.length) {
-    console.log(
-      "The arguments 'folder', 'fileName', 'verifyToken' and 'verifyAccessKey' are required."
-    );
-    console.log(
-      "Example: create-route -folder user -fileName bulkCreate.ts -verifyToken false -verifyAccessKey true"
-    );
-    process.exit();
-  }
-  const folderIndex = process.argv.indexOf("-folder");
-  const routeTypeIndex = process.argv.indexOf("-routeType");
-  const fileNameIndex = process.argv.indexOf("-fileName");
-  const verifyTokenIndex = process.argv.indexOf("-verifyToken");
-  const verifyAccessKeyIndex = process.argv.indexOf("-verifyAccessKey");
-  let warning = "";
-  const requiredArguments = [];
-  if (folderIndex === -1) {
-    requiredArguments.push("folder");
-  }
-  if (routeTypeIndex === -1) {
-    requiredArguments.push("routeType");
-  }
-  if (fileNameIndex === -1) {
-    requiredArguments.push("fileName");
-  }
-  if (verifyTokenIndex === -1) {
-    requiredArguments.push("verifyToken");
-  }
-  if (verifyAccessKeyIndex === -1) {
-    requiredArguments.push("verifyAccessKey");
-  }
-  if (requiredArguments.length) {
-    warning = `The argument${
-      requiredArguments.length > 1 ? "s" : ""
-    } ${requiredArguments
-      .map((arg, index) => {
-        if (
-          requiredArguments.length > 1 &&
-          index === requiredArguments.length - 1
-        ) {
-          return `and '${arg}'`;
+    const args = process.argv.slice(2);
+    // All arguments missing.
+    if (!args.length) {
+        console.log("The arguments 'folder', 'fileName', 'verifyToken' and 'verifyAccessKey' are required.");
+        console.log("Example: create-route -folder user -fileName bulkCreate.ts -verifyToken false -verifyAccessKey true");
+        process.exit();
+    }
+    const folderIndex = process.argv.indexOf("-folder");
+    const routeTypeIndex = process.argv.indexOf("-routeType");
+    const fileNameIndex = process.argv.indexOf("-fileName");
+    const verifyTokenIndex = process.argv.indexOf("-verifyToken");
+    const verifyAccessKeyIndex = process.argv.indexOf("-verifyAccessKey");
+    let warning = "";
+    const requiredArguments = [];
+    if (folderIndex === -1) {
+        requiredArguments.push("folder");
+    }
+    if (routeTypeIndex === -1) {
+        requiredArguments.push("routeType");
+    }
+    if (fileNameIndex === -1) {
+        requiredArguments.push("fileName");
+    }
+    if (verifyTokenIndex === -1) {
+        requiredArguments.push("verifyToken");
+    }
+    if (verifyAccessKeyIndex === -1) {
+        requiredArguments.push("verifyAccessKey");
+    }
+    if (requiredArguments.length) {
+        warning = `The argument${requiredArguments.length > 1 ? "s" : ""} ${requiredArguments
+            .map((arg, index) => {
+            if (requiredArguments.length > 1 &&
+                index === requiredArguments.length - 1) {
+                return `and '${arg}'`;
+            }
+            return `'${arg}'`;
+        })
+            .join(", ")} ${requiredArguments.length > 1 ? "are" : "is"} required.`;
+    }
+    if (warning.length) {
+        console.log(warning);
+        process.exit();
+    }
+    // ------------------------------------------------s
+    let folderValue;
+    if (folderIndex > -1) {
+        // Retrieve the value after --custom
+        folderValue = process.argv[folderIndex + 1];
+        if (!validFolders.includes(folderValue)) {
+            console.log(`The folder '${folderValue}' is invalid. Valid folders are: ${validFolders.join(", ")}`);
+            process.exit();
         }
-        return `'${arg}'`;
-      })
-      .join(", ")} ${requiredArguments.length > 1 ? "are" : "is"} required.`;
-  }
-  if (warning.length) {
-    console.log(warning);
-    process.exit();
-  }
-  // ------------------------------------------------s
-  let folderValue;
-  if (folderIndex > -1) {
-    // Retrieve the value after --custom
-    folderValue = process.argv[folderIndex + 1];
-    if (!validFolders.includes(folderValue)) {
-      console.log(
-        `The folder '${folderValue}' is invalid. Valid folders are: ${validFolders.join(
-          ", "
-        )}`
-      );
-      process.exit();
     }
-  }
-  let routeTypeValue;
-  if (routeTypeIndex > -1) {
-    // Retrieve the value after --custom
-    routeTypeValue = process.argv[routeTypeIndex + 1];
-    if (!validRouteTypes.includes(routeTypeValue)) {
-      console.log(
-        `The method '${routeTypeValue}' is invalid. Valid methods are: ${validRouteTypes.join(
-          ", "
-        )}`
-      );
-      process.exit();
-    }
-  }
-  let fileNameValue;
-  if (fileNameIndex > -1) {
-    // Retrieve the value after --custom
-    fileNameValue = process.argv[fileNameIndex + 1];
-    if (!fileNameValue.endsWith(".js") && !fileNameValue.endsWith(".ts")) {
-      console.log("The file name must end with '.js' or '.ts'.");
-      process.exit();
-    }
-  }
-  let verifyTokenValue;
-  if (verifyTokenIndex > -1) {
-    verifyTokenValue = process.argv[verifyTokenIndex + 1].toLowerCase();
-    if (verifyTokenValue !== "true" && verifyTokenValue !== "false") {
-      console.log(
-        "The value for 'verifyToken' must be either 'true' or 'false'."
-      );
-      process.exit();
-    }
-  }
-  let verifyAccessKeyValue;
-  if (folderIndex > -1) {
-    // Retrieve the value after --custom
-    verifyAccessKeyValue = process.argv[verifyAccessKeyIndex + 1].toLowerCase();
-    if (verifyAccessKeyValue !== "true" && verifyAccessKeyValue !== "false") {
-      console.log(
-        "The value for 'verifyAccessKey' must be either 'true' or 'false'."
-      );
-      process.exit();
-    }
-  }
-  // Define the project structure: directories and their respective files
-  const projectStructure = {
-    src: [`router/routes/${folderValue}/${fileNameValue}`],
-  };
-  function readWriteAsync() {
-    try {
-      fs_1.default.readFile(
-        "src/config/index.ts",
-        "utf-8",
-        function (err, data) {
-          // console.log(data);
-          if (err) throw err;
-          const match = data.match(/protectedRoutes: \[/gim);
-          console.log(match);
-          if (verifyTokenValue === "true") {
-            console.log("verifyTokenValue is true writingFile");
-            fs_1.default.writeFile(
-              "src/config/index.ts",
-              data.replace(
-                // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
-                /protectedRoutes: \[/gim,
-                `protectedRoutes: ["${folderValue}/${fileNameValue}",`
-              ),
-              "utf-8",
-              function (err) {
-                if (err) throw err;
-                console.log("filelistAsync complete");
-              }
-            );
-          }
-          if (verifyAccessKeyValue === "true") {
-            console.log("verifyAccessKeyValue is true writingFile");
-            fs_1.default.writeFile(
-              "src/config/index.ts",
-              data.replace(
-                // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
-                /privateRoutes: \[/gim,
-                `privateRoutes: ["${folderValue}/${fileNameValue}",`
-              ),
-              "utf-8",
-              function (err) {
-                if (err) throw err;
-                console.log("filelistAsync complete");
-              }
-            );
-          }
+    let routeTypeValue;
+    if (routeTypeIndex > -1) {
+        // Retrieve the value after --custom
+        routeTypeValue = process.argv[routeTypeIndex + 1];
+        if (!validRouteTypes.includes(routeTypeValue)) {
+            console.log(`The method '${routeTypeValue}' is invalid. Valid methods are: ${validRouteTypes.join(", ")}`);
+            process.exit();
         }
-      );
-    } catch (error) {
-      throw error;
     }
-  }
-  readWriteAsync();
-  Object.entries(projectStructure).forEach(([dir, files]) => {
-    // fs.mkdirSync(dir, { recursive: true }); // Create directories
-    files.forEach((file) =>
-      fs_1.default.writeFileSync(
-        `src/router/routes/${folderValue}/${fileNameValue}`,
-        `
+    let fileNameValue;
+    if (fileNameIndex > -1) {
+        // Retrieve the value after --custom
+        fileNameValue = process.argv[fileNameIndex + 1];
+        if (!fileNameValue.endsWith(".js") && !fileNameValue.endsWith(".ts")) {
+            console.log("The file name must end with '.js' or '.ts'.");
+            process.exit();
+        }
+    }
+    let verifyTokenValue;
+    if (verifyTokenIndex > -1) {
+        verifyTokenValue = process.argv[verifyTokenIndex + 1].toLowerCase();
+        if (verifyTokenValue !== "true" && verifyTokenValue !== "false") {
+            console.log("The value for 'verifyToken' must be either 'true' or 'false'.");
+            process.exit();
+        }
+    }
+    let verifyAccessKeyValue;
+    if (folderIndex > -1) {
+        // Retrieve the value after --custom
+        verifyAccessKeyValue = process.argv[verifyAccessKeyIndex + 1].toLowerCase();
+        if (verifyAccessKeyValue !== "true" && verifyAccessKeyValue !== "false") {
+            console.log("The value for 'verifyAccessKey' must be either 'true' or 'false'.");
+            process.exit();
+        }
+    }
+    // Define the project structure: directories and their respective files
+    const projectStructure = {
+        src: [`router/routes/${folderValue}/${fileNameValue}`],
+    };
+    function readWriteAsync() {
+        try {
+            fs_1.default.readFile("src/config/index.ts", "utf-8", function (err, data) {
+                // console.log(data);
+                if (err)
+                    throw err;
+                const match = data.match(/protectedRoutes: \[/gim);
+                console.log(match);
+                if (verifyTokenValue === "true") {
+                    console.log("verifyTokenValue is true writingFile");
+                    fs_1.default.writeFile("src/config/index.ts", data.replace(
+                    // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
+                    /protectedRoutes: \[/gim, `protectedRoutes: ["${folderValue}/${fileNameValue}",`), "utf-8", function (err) {
+                        if (err)
+                            throw err;
+                        console.log("filelistAsync complete");
+                    });
+                }
+                if (verifyAccessKeyValue === "true") {
+                    console.log("verifyAccessKeyValue is true writingFile");
+                    fs_1.default.writeFile("src/config/index.ts", data.replace(
+                    // /protectedRoutes: \[(\r\n|\r|\n)\s*"/gim,
+                    /privateRoutes: \[/gim, `privateRoutes: ["${folderValue}/${fileNameValue}",`), "utf-8", function (err) {
+                        if (err)
+                            throw err;
+                        console.log("filelistAsync complete");
+                    });
+                }
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    readWriteAsync();
+    Object.entries(projectStructure).forEach(([dir, files]) => {
+        // fs.mkdirSync(dir, { recursive: true }); // Create directories
+        files.forEach((file) => fs_1.default.writeFileSync(`src/router/routes/${folderValue}/${fileNameValue}`, (`
       "use strict";
       import * as express from "express";
       const router = express.Router();
@@ -191,9 +152,9 @@ try {
       //   .bail()
       //   .escape();
 ` +
-          "router." +
-          routeTypeValue +
-          `(
+            "router." +
+            routeTypeValue) +
+            `(
         "/",
         //   validatedFields,
         async (req: express.Request, res: express.Response) => {
@@ -203,12 +164,11 @@ try {
       );
 
       module.exports = router;
-    `
-      )
-    ); // Create files
-  });
-  console.log("Project structure created successfully!");
-} catch (error) {
-  console.error("An error occurred:", error);
-  process.exit();
+    `)); // Create files
+    });
+    console.log("Project structure created successfully!");
+}
+catch (error) {
+    console.error("An error occurred:", error);
+    process.exit();
 }

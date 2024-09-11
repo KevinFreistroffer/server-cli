@@ -61,6 +61,10 @@ try {
             console.log(`The folder '${folderValue}' is invalid. Valid folders are: ${validFolders.join(", ")}`);
             process.exit();
         }
+        if (!folderValue.startsWith("/")) {
+            console.log(`The folder must start with a forward slash '/'`);
+            process.exit();
+        }
     }
     let routeTypeValue;
     if (routeTypeIndex > -1) {

@@ -94,11 +94,6 @@ try {
       );
       process.exit();
     }
-
-    if (!folderValue.startsWith("/")) {
-      console.log(`The folder must start with a forward slash '/'`);
-      process.exit();
-    }
   }
   let routeTypeValue: string;
   if (routeTypeIndex > -1) {
